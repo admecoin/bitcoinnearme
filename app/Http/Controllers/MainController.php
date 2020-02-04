@@ -9,7 +9,7 @@ use Input;
 use DB;
 use Redirect;
 use Alert;
-use Mail;
+use Illuminate\Support\Facades\Mail;
 use Location;
 use Session;
 use Cookie;
@@ -109,9 +109,9 @@ class MainController extends Controller {
 
 	public function index() {
 
-		/// Get Current Location by IP Address
+		// Get Current Location by IP Address
 		// $ip = $_SERVER['REMOTE_ADDR'];
-  //   	$current_location  = file_get_contents("http://ipinfo.io/".$ip."/geo");
+  		//   	$current_location  = file_get_contents("http://ipinfo.io/".$ip."/geo");
 		// $live  =  json_decode($current_location, true);
 		$live = $this->ip_info();
 
@@ -121,7 +121,7 @@ class MainController extends Controller {
             ->join('a_currency_list as currency', 'currency.id', '=', 'offer.currency_id')
             ->join('a_payment_mode as payment', 'payment.id', '=', 'offer.mode_id')
             ->join('a_coin_info as coin', 'coin.id', '=', 'offer.coin_id')
-            ->select('offer.id as offer_id','offer.type_id','offer.min','offer.max','offer.trade','user.user_name','user.email', 'user.id as user_id','currency.short','currency.rate','payment.name as payment_mode','coin.price as coinprice','coin.label')
+            ->select('offer.id as offer_id','offer.type_id','offer.min','offer.max','offer.trade','offer.location','user.user_name','user.email', 'user.id as user_id','currency.short','currency.rate','payment.name as payment_mode','coin.price as coinprice','coin.label')
             ->where(['offer.type_id'=>'14','offer.status'=>'1'])->limit(5)
             ->orderBy('offer.id','desc')->get();
 
@@ -131,7 +131,7 @@ class MainController extends Controller {
             ->join('a_currency_list as currency', 'currency.id', '=', 'offer.currency_id')
             ->join('a_payment_mode as payment', 'payment.id', '=', 'offer.mode_id')
             ->join('a_coin_info as coin', 'coin.id', '=', 'offer.coin_id')
-            ->select('offer.id as offer_id','offer.type_id','offer.min','offer.max','offer.trade','user.user_name','user.email', 'user.id as user_id','currency.short','currency.rate','payment.name as payment_mode','coin.price as coinprice','coin.label')
+            ->select('offer.id as offer_id','offer.type_id','offer.min','offer.max','offer.trade','offer.location','user.user_name','user.email', 'user.id as user_id','currency.short','currency.rate','payment.name as payment_mode','coin.price as coinprice','coin.label')
             ->where(['offer.type_id'=>'15','offer.status'=>'1'])->limit(5)
             ->orderBy('offer.id','desc')->get();
 
@@ -162,116 +162,6 @@ class MainController extends Controller {
 		return View::make('main')->with($data);;
 	}
 	
-	public function loginmagiclink($user_id, $otp, $passwd, Request $request){
-				
-		$user = DB::table('a_users')->where('id',$user_id)->get();
-		if(count($user)>0){
-			$checkOTP = DB::table('a_otp_list')->select('otp')->where('user_id',$user_id)->where('otp',$otp)->where('status', 1)->get();
-			
-			if(count($checkOTP)>0){
-				if($checkOTP[0]->otp == $otp){
-					$email = $user[0]->email;
-					$uname = $user[0]->user_name;
-					$user_type = $user[0]->user_type;
-					
-					$code = md5(mt_rand(100000, 999999));
-					$request->session()->put('user_id', $user[0]->id);
-					$request->session()->put('session_code', $code);
-					$request->session()->put('user_type', $user[0]->user_type);
-					$request->session()->put('user_name', $user[0]->user_name);
-					$request->session()->put('lastActivityTime', time());
-					
-					$session_id = Session::get('session_code');
-					$userAgent = $request->server('HTTP_USER_AGENT');
-
-					$dd = new DeviceDetector($userAgent);
-					$dd->parse();
-					$osInfo = $dd->getOs();
-
-					$array = array(
-						"user_id" => $user[0]->id,
-						"session_code" => $session_id,
-						"in_time" => date("Y-m-d H:i:s"),
-						"os" => $osInfo['name']." ".$osInfo['version']. " ". $osInfo['platform'],
-						"user_agent" => $request->server('HTTP_USER_AGENT'),
-						"status" => "1",
-						"created_by" => $user[0]->id,
-						"created_date" => date("Y-m-d H:i:s"),
-						"created_ip" => $request->ip(),
-					);
-				
-					$check = DB::table('a_users_log')->insertGetId($array);
-					
-					DB::table('a_otp_list')->where('user_id',$user_id)->where('otp',$otp)->update(array('status' => '2'));
-					
-					if($check) {
-
-						$site_conf = DB::table('a_site_config')->where('id',2)->get();
-						$authkey = $site_conf[0]->value;
-						$to = $email;
-						$from = "no-reply@crypscrow.com";							
-						$subject = "Login Confirmation";
-						$body = "<body> <h2>Dear ".$uname.",</h2><br><p>We noticed a recent login from your account. Please find below details of your login:</p><br><p>IP Address : ". $request->ip() ." <br>Date:".date('Y-m-d')."<br> Time:". date('H:i:s ') ." GMT</p><br><p>Thank you,</p><p>Team Crypscrow</p></body>";
- 
-						$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
-						$curl = curl_init();
-
-						curl_setopt_array($curl, array(
-						  CURLOPT_URL => $url,
-						  CURLOPT_RETURNTRANSFER => true,
-						  CURLOPT_ENCODING => "",
-						  CURLOPT_MAXREDIRS => 10,
-						  CURLOPT_TIMEOUT => 30,
-						  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-						  CURLOPT_CUSTOMREQUEST => "POST",
-						  CURLOPT_POSTFIELDS => "",
-						  CURLOPT_SSL_VERIFYHOST => 0,
-						  CURLOPT_SSL_VERIFYPEER => 0,
-						));
-						$response = curl_exec($curl);
-						$err = curl_error($curl);
-						curl_close($curl);
-
-						$res = json_decode($response,true);
-						$uid = $user_id;
-						$array3 = array(
-			                'user_id'      => $uid,
-			                'page'      => url('/').'login/',
-			                'from'      => $from,
-			                'subject'      => $subject,
-			                'to'      => $to,
-			                'body' => $body,
-			                'status'    => "1",
-			                'created_by'  => $uid,
-			                'created_date'  => date("Y-m-d H:i:s"),
-			                'created_ip' => $_SERVER['REMOTE_ADDR']
-		            	);
-						$check3 = DB::table('a_mail_log')->insertGetId($array3);
-
-						$notification = array('message' => 'Your Login is Successful','alert-type' => 'success');
-						if ($user_type == 1) {							
-							return Redirect::to('admin')->with($notification);
-						} else {
-							return Redirect::to('offers-buy')->with($notification);
-						}
-					}
-				}
-				else{
-					$notification = array('message' => 'It Seems you have entered wrong verification email code, please try again.', 'alert-type' => 'error');
-					return Redirect::to('login')->with($notification);
-				}
-			}
-			else{
-				$notification = array('message' => 'It Seems you have entered wrong verification email code, please try again.', 
-					'alert-type' => 'error' );
-					return Redirect::to('login')->with($notification);
-			}
-		}
-		else {
-			$notification = array('message' => 'Oops! Something wrong.', 'alert-type' => 'error');
-			return Redirect::to('login')->with($notification);
-		}
-	}
 	
 	public function otpverify(Request $request){
 		
@@ -330,7 +220,7 @@ class MainController extends Controller {
 						$to = $email;
 						$from = "no-reply@crypscrow.com";							
 						$subject = "Login Confirmation";
-						$body = "<body> <h2>Dear ".$uname.",</h2><br><p>We noticed a recent login from your account. Please find below details of your login:</p><br><p>IP Address : ". $request->ip() ." <br>Date:".date('Y-m-d')."<br> Time:". date('H:i:s ') ." GMT</p><br><p>Thank you,</p><p>Team Crypscrow</p></body>";
+						$body = "<body> <h2>Dear ".$uname.",</h2><br><p>We noticed a recent login from your account. Please find below details of your login:</p><br><p>IP Address : ". $request->ip() ." <br>Date:".date('Y-m-d')."<br> Time:". date('H:i:s ') ." GMT</p><br><p>Thank you,</p><p>Team BitcoinNearMe</p></body>";
 
 						$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
 						$curl = curl_init();
@@ -2849,8 +2739,8 @@ class MainController extends Controller {
     					$authkey = $select[0]->value;
 
 						$from = "no-reply@crypscrow.com";
-						$subject = "Crypscrow Bio Update";
-						$body = "<body><h2>Hello ".$uname.",</h2><p>Your Bio has been Update with : <br><b><u>+". $data['biodata'] ."</u></b>. </p><p><b>Thank you,</b></p><p><b>Crypscrow</b></p></body>";
+						$subject = "BitcoinNearMe Bio Update";
+						$body = "<body><h2>Hello ".$uname.",</h2><p>Your Bio has been Update with : <br><b><u>+". $data['biodata'] ."</u></b>. </p><p><b>Thank you,</b></p><p><b>BitcoinNearMe</b></p></body>";
 						$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
 
 						$curl = curl_init();
@@ -3067,8 +2957,8 @@ class MainController extends Controller {
 	    				$authkey = $select[0]->value;
 
 						$from = "no-reply@crypscrow.com";							
-						$subject = "Crypscrow Phone Number Update";
-						$body = "<body><h2>Hello ".$uname.",</h2><p>Your Phone Number has been changed with <b><u>+". $data['phone2'] ."</u></b> Number</p><p><b>Thank you,</b></p><p><b>Crypscrow</b></p></body>";
+						$subject = "BitcoinNearMe Phone Number Update";
+						$body = "<body><h2>Hello ".$uname.",</h2><p>Your Phone Number has been changed with <b><u>+". $data['phone2'] ."</u></b> Number</p><p><b>Thank you,</b></p><p><b>BitcoinNearMe</b></p></body>";
 						$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
 
 						$curl = curl_init();
@@ -4209,40 +4099,16 @@ class MainController extends Controller {
 				
 				if ($changeauth) {
 
-					$select = DB::table('a_site_config')->where('id',2)->get();
-    				$authkey = $select[0]->value;
-					$to = $u->email;
-					$from = "no-reply@crypscrow.com";							
-					$subject = "Reset Password Link";
-					$body = "<body><h2>Dear ".$u->user_name.",</h2><br><p>You have generated a Forget Request.</p><p>Click on <a href=".$link." target=_blank>".$link."</a> to reset your password</p><br><p>Thank you,</p><p>Team Crypscrow</p></body>";
-
-					$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
-
-					$curl = curl_init();
-
-					curl_setopt_array($curl, array(
-					  CURLOPT_URL => $url,
-					  CURLOPT_RETURNTRANSFER => true,
-					  CURLOPT_ENCODING => "",
-					  CURLOPT_MAXREDIRS => 10,
-					  CURLOPT_TIMEOUT => 30,
-					  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-					  CURLOPT_CUSTOMREQUEST => "POST",
-					  CURLOPT_POSTFIELDS => "",
-					  CURLOPT_SSL_VERIFYHOST => 0,
-					  CURLOPT_SSL_VERIFYPEER => 0,
-					));
-
-					$response = curl_exec($curl);
-					$err = curl_error($curl);
-
-					curl_close($curl);
-
-					if ($err) {
-					  echo "cURL Error #:" . $err;
-					} else {
-					  echo $response;
-					}
+					$mail_data = array (
+                            'email' => $user[0]->email, 
+                            'user_name' => $user[0]->user_name, 
+                            'actionURL' => $link);
+                    
+                    $mail = Mail::send(['html' => 'emails.forgot'], $mail_data, function($message) use ($mail_data) {
+                        $message->to($mail_data['email'], $mail_data['user_name']);
+                        $message->subject('Reset Password Link');
+                        $message->from('info@erience.com', 'BitCoinNearMe');
+                    });
 
 					$notification = array('message' => 'Check your mail for reset password',
 								'alert-type' => 'success');
@@ -4390,220 +4256,50 @@ class MainController extends Controller {
 				return Redirect::to('login')->with($notification);
 
 			} else {
-
+				
 				$password = DB::table('a_users_auth')->where('user_id', $user[0]->id)->get();
 
 				if($password[0]->value == md5($data['password'])){
 
 					if ($status == '1') {
-						$userLog = DB::table('a_users_log')->where('user_id',$uid)->limit(1)->orderBy('id','DESC')->first();
-						if ($userLog != '') {
-							if ($userLog->out_time == '' && $userLog->session_code != '') {
-								$notification = array(
-									'message' => 'You are already logged in. Please try logging in again in sometime.',
-									'alert-type' => 'warning'
-								);
-								return Redirect::to('home')->with($notification);
-							}
-							else {
-								// Select User OTP If already Exist
-								$userOTP = DB::table('a_otp_list')->where('user_id',$uid)->get();
-								// Select API Key from Database Table
-								$site_config = DB::table('a_site_config')->where('id',2)->get();
-								
-								$otp =  mt_rand(100000, 999999);
-								$array = array(
-									"user_id" => $uid,
-									"otp" => $otp,
-									"status" => "1",
-									"created_by" => $uid,
-									"created_date" => date('Y-m-d H:i:s'),
-									"created_ip" => $_SERVER['REMOTE_ADDR']
-								);
-						
-								if (!empty($userOTP)) {
-									// Update OTP if Exist in Database table
-									$check = DB::table('a_otp_list')->where('user_id',$uid)->update($array);
-								} 
-								else {
-									// Insert OTP if not exist in Database table
-									$check = DB::table('a_otp_list')->insertGetId($array);
-								}
-								
-								if($password[0]->auth_type == 1){
-									$link = "https://crypscrow.com/login-magic-link/".$uid."/".$otp."/".$password[0]->value;
-									$authkey = $site_config[0]->value;
-									$to = $email;
-									$from = "no-reply@crypscrow.com";							
-									$subject = "CrypScrow Login Verification";
-									$body = "<body><h2>Dear ".$uname.",</h2><br><p>Please click on <a href=".$link." target='_blank'> ".$link." </a> to Login.</p> <br> <p>If the above link doesn't work for some reason, please enter the provided OTP :".$otp."</p><br><p> Thank you,</p><p>Team CrypScrow</p></body>";
 
-									$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
+						$code = md5(mt_rand(100000, 999999));
+						$request->session()->put('user_id', $user[0]->id);
+						$request->session()->put('session_code', $code);
+						$request->session()->put('user_type', $user[0]->user_type);
+						$request->session()->put('user_name', $user[0]->user_name);
+						$request->session()->put('lastActivityTime', time());
+						$session_id = Session::get('session_code');
+						$userAgent = $request->server('HTTP_USER_AGENT');
 
-									$curl = curl_init();
+						$dd = new DeviceDetector($userAgent);
+						$dd->parse();
+						$osInfo = $dd->getOs();
 
-									curl_setopt_array($curl, array(
-									  CURLOPT_URL => $url,
-									  CURLOPT_RETURNTRANSFER => true,
-									  CURLOPT_ENCODING => "",
-									  CURLOPT_MAXREDIRS => 10,
-									  CURLOPT_TIMEOUT => 30,
-									  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-									  CURLOPT_CUSTOMREQUEST => "POST",
-									  CURLOPT_POSTFIELDS => "",
-									  CURLOPT_SSL_VERIFYHOST => 0,
-									  CURLOPT_SSL_VERIFYPEER => 0,
-									));
-									
-									$response = curl_exec($curl);
-									$err = curl_error($curl);
-									curl_close($curl);
-									if ($err) {
-									  echo "cURL Error #:" . $err;
-									}
-
-									// echo "<pre>".$to;
-									// print_r($response); exit;
-
-								} else {
-									
-									$authKey = $site_config[0]->value; //$select[0]->value;
-									$mobileNumber = $mobile; // 228449AcyEZTO4J5b5aac18
-									$senderId = "CRYPTO";
-									$otp = "[CrypScrow]Verification code: ".$otp.". Make sure the domain in your address bar is 'crypscrow.com' before proceeding to prevent phishing.";
-									$message = urlencode($otp);
-									$route = "4";
-
-									$postData = array( 
-										'authkey' => $authKey,
-										'country' => $u->country,
-										'mobiles' => $mobileNumber, 
-										'message' => $message,
-										'sender' => $senderId,
-										'route' => $route
-									);
-									
-									// OLD API 
-								   $url="http://api.msg91.com/api/sendhttp.php";
-									$ch = curl_init();
-									curl_setopt_array($ch, array(
-										CURLOPT_URL => $url,
-										CURLOPT_RETURNTRANSFER => true,
-										CURLOPT_POST => true,
-										CURLOPT_POSTFIELDS => $postData
-										//,CURLOPT_FOLLOWLOCATION => true
-									));
-									curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-									curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-									$output = curl_exec($ch);
-									
-									if(curl_errno($ch)) {
-										echo 'error:' . curl_error($ch);
-									}
-									curl_close($ch); 
-								}	
-								$data_1 = array('user_id' => $user[0]->id);
-								return View::make('otp-login')->with($data_1);
-							}
-						}							
-						else {							
-							// Select User OTP If already Exist
-							$userOTP = DB::table('a_otp_list')->where('user_id',$uid)->get();
-							// Select API Key from Database Table
-							$site_config = DB::table('a_site_config')->where('id',2)->get();
-							
-							$otp =  mt_rand(100000, 999999);
-							$array = array(
-								"user_id" => $uid,
-								"otp" => $otp,
-								"status" => "1",
-								"created_by" => $uid,
-								"created_date" => date('Y-m-d H:i:s'),
-								"created_ip" => $_SERVER['REMOTE_ADDR']
-							);
+						$array = array(
+							"user_id" => $user[0]->id,
+							"session_code" => $session_id,
+							"in_time" => date("Y-m-d H:i:s"),
+							"os" => $osInfo['name']." ".$osInfo['version']. " ". $osInfo['platform'],
+							"user_agent" => $request->server('HTTP_USER_AGENT'),
+							"status" => "1",
+							"created_by" => $user[0]->id,
+							"created_date" => date("Y-m-d H:i:s"),
+							"created_ip" => $request->ip(),
+						);
 					
-							if (!empty($userOTP)) {
-								// Update OTP if Exist in Database table
-								$check = DB::table('a_otp_list')->where('user_id',$uid)->update($array);
-							} 
-							else {
-								// Insert OTP if not exist in Database table
-								$check = DB::table('a_otp_list')->insertGetId($array);
-							}
-							
-							if($password[0]->auth_type == 1){
-								$link = "https://crypscrow.com/login-magic-link/".$uid."/".$otp."/".$password[0]->value;
-								$authkey = $site_config[0]->value;
-								$to = $email;
-								$from = "no-reply@crypscrow.com";							
-								$subject = "CrypScrow Login Verification";
-								$body = "<body><h2>Dear ".$uname.",</h2><br><p>Please click on <a href=".$link." target='_blank'> ".$link." </a> to Login.</p> <br> <p>If the above link doesn't work for some reason, please enter the provided OTP : ".$otp."</p><br><p>Thank you, </p><p>Team Crypscrow</p></body>";
-								$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
+						$check = DB::table('a_users_log')->insertGetId($array);
 
-								$curl = curl_init();
-
-								curl_setopt_array($curl, array(
-								  CURLOPT_URL => $url,
-								  CURLOPT_RETURNTRANSFER => true,
-								  CURLOPT_ENCODING => "",
-								  CURLOPT_MAXREDIRS => 10,
-								  CURLOPT_TIMEOUT => 30,
-								  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-								  CURLOPT_CUSTOMREQUEST => "POST",
-								  CURLOPT_POSTFIELDS => "",
-								  CURLOPT_SSL_VERIFYHOST => 0,
-								  CURLOPT_SSL_VERIFYPEER => 0,
-								));
-								
-								$response = curl_exec($curl);
-								$err = curl_error($curl);
-								curl_close($curl);
-								if ($err) {
-								  echo "cURL Error #:" . $err;
-								}
-							} else {
-								
-								$authKey = $site_config[0]->value; 
-								$mobileNumber = $mobile; 
-								$senderId = "CRYPTO";
-								$otp = "[CrypScrow]Verification code: ".$otp.". Make sure the domain in your address bar is 'crypscrow.com' before proceeding to prevent phishing.";
-								$message = urlencode($otp);
-								$route = "4";
-
-								$postData = array( 
-									'authkey' => $authKey,
-									'mobiles' => $mobileNumber, 
-									'country' => $u->country,
-									'message' => $message,
-									'sender' => $senderId,
-									'route' => $route
-								);
-								
-								// OLD API 
-							   $url="http://api.msg91.com/api/sendhttp.php";	
-								$ch = curl_init();
-								curl_setopt_array($ch, array(
-									CURLOPT_URL => $url,
-									CURLOPT_RETURNTRANSFER => true,
-									CURLOPT_POST => true,
-									CURLOPT_POSTFIELDS => $postData
-									//,CURLOPT_FOLLOWLOCATION => true
-								));
-								curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-								$output = curl_exec($ch);
-								
-								if(curl_errno($ch)) {
-									echo 'error:' . curl_error($ch);
-								}
-								curl_close($ch); 
-							}	
-							$data_1 = array('user_id' => $user[0]->id);
-							return View::make('otp-login')->with($data_1);
+						$notification = array('message' => 'Your Login is Successful','alert-type' => 'success');
+						if ($user[0]->user_type == 1) {							
+							return Redirect::to('admin')->with($notification);
+						} else {
+							return Redirect::to('offers-buy')->with($notification);
 						}
+
 					} else if($status =='0'){
 						$notification = array(
-							'message' => 'Verify Your Account to start using CrypScrow.',
+							'message' => 'Verify Your Account to start using BitcoinNearMe.',
 							'alert-type' => 'warning'
 						);
 						return Redirect::to('login')->with($notification);
@@ -4625,7 +4321,7 @@ class MainController extends Controller {
 		}
 	}
     
-    public function register() {
+   /* public function register() {
    		
    		$userType = Session::get('user_type');
    		$userName = Session::get('user_name');
@@ -4638,7 +4334,7 @@ class MainController extends Controller {
 			return Redirect::to('home');
 		}
 		
-	}
+	}*/
 
 	public function faqs() {
 		$data = array();
@@ -4711,7 +4407,7 @@ class MainController extends Controller {
 		}
 	}
 
-	public function insertuser(Request $request) {
+	/*public function insertuser(Request $request) {
 
 		$data = Input::all();
 
@@ -4931,8 +4627,8 @@ class MainController extends Controller {
 										$link = url('/').'/verify-email/'.$insert_id.'/'.$data['email'].'?VerifyMailToken='.md5($data['password']);
 										$to = $data['email'];
 										$from = "no-reply@crypscrow.com";							
-										$subject = "CrypScrow Account Activation";
-										$body = "<body><h2>Dear ".$data['user_name'].",</h2><br><p>Please verify your account by clicking on <a href=".$link." target=_blank>".$link."</a>. You would not be able to login unless you verify your account.</p><br><p>Thank you,</p><p>Team CrypScrow</p></body>";
+										$subject = "BitcoinNearMe Account Activation";
+										$body = "<body><h2>Dear ".$data['user_name'].",</h2><br><p>Please verify your account by clicking on <a href=".$link." target=_blank>".$link."</a>. You would not be able to login unless you verify your account.</p><br><p>Thank you,</p><p>Team BitcoinNearMe</p></body>";
 
 										$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
 
@@ -4985,30 +4681,25 @@ class MainController extends Controller {
 						}
 				}
 		}
-	}
+	}*/
 
-	public function verifyEmail($id='', $email=''){
+	/*public function verifyEmail($id='', $email=''){
 		
 		$where = array('id' => $id, 'email'=>$email);
 		$user = DB::table('a_users')->where($where)->get();
-
 		$token = $_GET['VerifyMailToken'];
+		if ($user != '') {			
 
-		if ($user != '') {
-			
 			$userAuth = DB::table('a_users_auth')->where(array('user_id'=>$id))->get();
 
 			if ($userAuth[0]->value == $token) {
-
 				DB::table('a_users')->where($where)->update(array('status'=> '1'));
 				DB::table('a_users_auth')->where(array('user_id'=>$id))->update(array('status'=> '1'));
 				DB::table('a_users_info')->where(array('user_id'=>$id))->update(array('status'=> '1'));
-
 				$notification = array('message' => 'Account Verified Successfully!', 'alert-type' => 'success');
 				return Redirect::to('login')->with($notification);
 			} 
 			else {
-
 				$notification = array('message' => 'Token Not Valid!', 'alert-type' => 'error');
 				return Redirect::to('login')->with($notification);
 			}
@@ -5017,7 +4708,7 @@ class MainController extends Controller {
 			$notification = array('message' => 'Error occured, Please try again', 'alert-type' => 'error');
 			return Redirect::to('login')->with($notification);
 		}
-	}
+	}*/
 
 
 	public function coincron(){
@@ -5717,7 +5408,7 @@ class MainController extends Controller {
 
 			$p_method = $p_mode_type[0]->name;
 			
-			$body = "<body><h2>Dear ".$to_username.",</h2><br><p>The ".$from_username." has transferred the mentioned amount ". $fiat_value ." towards purchase of " .$coin. " through the ".$p_method." mentioned in the contract. <br>Please verify the payment and release the  " .$coin. " to the ".$from_username.".</p><p>Thank you,</p><p>Team Crypscrow</p></body>";
+			$body = "<body><h2>Dear ".$to_username.",</h2><br><p>The ".$from_username." has transferred the mentioned amount ". $fiat_value ." towards purchase of " .$coin. " through the ".$p_method." mentioned in the contract. <br>Please verify the payment and release the  " .$coin. " to the ".$from_username.".</p><p>Thank you,</p><p>Team BitcoinNearMe</p></body>";
 
 			/*$body = "The buyer has transferred the mentioned amount ". $fiat_value ." for the " .$coin. " contract through the payment method ".$p_method." mentioned in the contract. <br> Please verify the payment and release the " .$coin. " to the buyer ".$from_username.".";*/
 			
@@ -6153,7 +5844,7 @@ class MainController extends Controller {
 					$from = "no-reply@crypscrow.com";							
 					$subject = "You received an message from ".$uname2;
 					
-					$body = "<body> <h2>Dear ".$uname.",</h2><br><p>This is the inform about your recent trade with ".$uname2.". The ".$uname2." want to chat with you about trade.</p><br><p>Thank you,</p><p>Team Crypscrow</p></body>";
+					$body = "<body> <h2>Dear ".$uname.",</h2><br><p>This is the inform about your recent trade with ".$uname2.". The ".$uname2." want to chat with you about trade.</p><br><p>Thank you,</p><p>Team BitcoinNearMe</p></body>";
 
 					$url = "http://control.msg91.com/api/sendmail.php?authkey=".$authkey."&from=".$from."&to=".$to."&subject=".$subject."&body=".$body;
 

@@ -74,18 +74,22 @@
                             <img src="assets/image/logo.png" class="img-fluid mobile-width mb-20" alt="" >
                         </a>
     	            </div> -->
-    	            <form>
+    	            <form method="post" action="{{url('/')}}/change-password" onsubmit='return get_action();'>
+                     {{ csrf_field() }}
 	                    <div class="row">
 	                        <div class="col-12">
 	                            <div class="form-group">
 	                                <label class="control-label">Password</label>
-	                                <input type="password" autocomplete="new-password" class="form-control" placeholder="Password">
+	                                <input type="password" autocomplete="new-password" name="newPass" class="form-control" placeholder="Password">
+                                    <input type="hidden" class="form-control" name="id" value="{{$user_id}}">
+                                    <input type="hidden" class="form-control" name="value" value="{{$value}}">
+                                    <input type="hidden" class="form-control" name="token" value="{{$AuthToken}}">
 	                            </div>
 	                        </div>
 	                        <div class="col-12">
 	                            <div class="form-group">
 	                                <label class="control-label">Confirm Password</label>
-	                                <input type="password" autocomplete="new-cpassword" class="form-control" placeholder="Confrim Password">
+	                                <input type="password" autocomplete="new-cpassword" name="cPass" class="form-control" placeholder="Confrim Password">
 	                            </div>
 	                        </div>
 	                        <div class="col-12">

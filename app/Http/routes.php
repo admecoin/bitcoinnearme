@@ -24,6 +24,12 @@ Route::group(['middleware' => 'userAuth'], function () {
 	);
 });
 
+// Register Controller
+Route::get('/register', 'RegisterationController@index');
+Route::post('/insertuser', 'RegisterationController@insertuser');
+Route::get('/verify-email/{id}/{email}/', 'RegisterationController@verifyEmail');
+Route::get('/verifysendemail', 'RegisterationController@sendemail');
+
 
 Route::get('/forgot', 'MainController@forgot');
 // Route::get('/reset', 'MainController@reset');
@@ -31,7 +37,7 @@ Route::post('/forgot-request', 'MainController@forgotRequest');
 Route::get('/reset-password/{id}/{value}/', 'MainController@resetPassword');
 Route::get('/offers-buy', 'MainController@offersbuy');
 Route::post('/change-password', 'MainController@changeNewPassword');
-Route::get('/verify-email/{id}/{email}/', 'MainController@verifyEmail');
+
 
 Route::get('/msg91/', 'MainController@msg91');
 
@@ -44,7 +50,7 @@ Route::post('/rating', 'MainController@rating');
 // Claim
 Route::post('/claim', 'MainController@claim');
 
-// Claim
+// KYC
 Route::post('/addkyc/{id}', 'MainController@addkyc')->name('addkyc');
 
 
@@ -101,8 +107,7 @@ Route::post('/otp-verify', 'MainController@otpverify');
 Route::get('/login-magic-link/{user_id}/{otp}/{passwd}', 'MainController@loginmagiclink');
 Route::get('/logout', 'MainController@logout');
 
-Route::get('/register', 'MainController@register');
-Route::post('/insertuser', 'MainController@insertuser');
+
 // Route::get('/htmlmail', 'MainController@htmlmail');
 Route::get('/mail', 'MainController@mail');
 

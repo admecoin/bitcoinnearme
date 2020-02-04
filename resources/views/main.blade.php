@@ -32,21 +32,27 @@
 		<header id="myHeader">
 			<div class="container">
 				<nav class="navbar navbar-expand-lg navbar-dark navigationbar">
-					<h1 class="m-0"><a href="{{ url('/') }}/home" class="text-white">BitcoinNearMe</a></h1>
+					<h1 class="m-0"><a href="{{ url('/') }}/home" class="text-white">BitcoinNearMe.com</a></h1>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav ml-auto">
 							<li class="nav-item active">
-								<a class="nav-link" href="{{ url('/') }}/offers-buy">
+								<a class="nav-link" href="#">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-search"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Browse</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-box"></i></div> -->
+										<div><span class="np-link-text">Buy Bitcoins</span></div>
+									</div>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									<div class="np-link">
+										<div></div>
+										<!-- <div><i class="fa fa-box" aria-hidden="true"></i></div> -->
+										<div><span class="np-link-text">Sell Bitcoins</span></div>
 									</div>
 								</a>
 							</li>
@@ -54,9 +60,10 @@
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/my-trades">
 									<div class="np-link">
-										<div>
+										<div></div>
+										<!-- <div>
 											<i class="fa fa-exchange-alt"></i>
-										</div>
+										</div> -->
 										<div>
 											<span class="np-link-text">Post a Trades</span>
 										</div>
@@ -66,60 +73,44 @@
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/my-offers">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-bullhorn"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Offers</span>
-										</div>
+										<div><i class="fa fa-bullhorn"></i></div>
+										<div><span class="np-link-text">Offers</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/wallet">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-wallet"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Wallet</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-wallet"></i></div> -->
+										<div><span class="np-link-text">Wallet</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/help">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-question-circle"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Help</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-question-circle"></i></div> -->
+										<div><span class="np-link-text">Help</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/my-account">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-user"></i>
-										</div>
-										<div>
-											<span class="np-link-text">{{Session::get('user_name')}}</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-user"></i></div> -->
+										<div><span class="np-link-text">{{Session::get('user_name')}}</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/logout">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-power-off"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Logout</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-power-off"></i></div> -->
+										<div><span class="np-link-text">Logout</span></div>
 									</div>
 								</a>
 							</li>
@@ -127,24 +118,18 @@
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/login">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-sign-in-alt"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Login</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-sign-in-alt"></i></div> -->
+										<div><span class="np-link-text">Login</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/register">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-sign-out-alt"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Register</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-sign-out-alt"></i></div> -->
+										<div><span class="np-link-text">Register</span></div>
 									</div>
 								</a>
 							</li>
@@ -171,13 +156,14 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
 							<h3>Buy bitcoins with cash near Los Angeles, CA, USA</h3>
+							
 							<div class="table-responsive">
 								<table class="table table-striped table-condensed table-bitcoins ">
 									<tbody>
 										<tr>
 											<th>Seller</th>
-											<th title="Payment method">Payment method</th>
-											<th title="Payment method">Trade</th>
+											<th title="Distance">Distance</th>
+											<th title="Location">Location</th>
 											<th class="header-price" title="Current price of this ad">Price / BTC</th>
 											<th class="header-limit" title="Trade amount in fiat currency">Limits</th>
 											<th></th>
@@ -190,14 +176,8 @@
 												<i class="fa fa-circle"></i>
 												</span>
 											</td>
-											<td>
-												<a href="#">
-													{{$srow->payment_mode}}
-												</a>
-											</td>
-											<td class="column-price">
-												{{ $srow->trade }} {{ $srow->label }}
-											</td>
+											<td>99.3 miles</td>
+											<td >{{ $srow->location }}</td>
 											<td class="column-price">
 												1 {{ $srow->label }} = {{$srow->coinprice}} USD
 											</td>
@@ -205,9 +185,7 @@
 												{{number_format($srow->min)}} - {{number_format($srow->max)}} {{ substr($srow->short,3) }}
 											</td>
 											<td class="column-button">
-												<a class="browse-btn" href="{{url('offer')}}/{{$srow->offer_id}}">
-												Buy
-												</a>
+												<a class="browse-btn" href="{{url('offer')}}/{{$srow->offer_id}}">Buy</a>
 											</td>
 										</tr>
 										@endforeach
@@ -234,16 +212,14 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
-							<h3>Sell bitcoins with cash near Los Angeles, CA, USA</h3>
+							<h3>Buy bitcoins online in United States</h3>
 							<div class="table-responsive">
 								<table class="table table-striped table-condensed table-bitcoins ">
 									<tbody>
 										<tr>
-											<th>
-												Buyer
-											</th>
-											<th title="Payment method">Payment method</th>
-											<th title="Payment method">Trade</th>
+											<th>Buyer</th>
+											<th title="Distance">Distance</th>
+											<th title="Location">Location</th>
 											<th class="header-price" title="Current price of this ad">Price / BTC</th>
 											<th class="header-limit" title="Trade amount in fiat currency">Limits</th>
 											<th></th>
@@ -256,14 +232,8 @@
 												<i class="fa fa-circle"></i>
 												</span>
 											</td>
-											<td>
-												<a href="#">
-													{{$brow->payment_mode}}
-												</a>
-											</td>
-											<td class="column-price">
-												{{ $brow->trade }} {{ $brow->label }}
-											</td>
+											<td>99.3 miles</td>
+											<td >{{$brow->location}}</td>
 											<td class="column-price">
 												1 {{ $brow->label }} = {{$brow->coinprice}} USD
 											</td>
@@ -271,9 +241,7 @@
 												{{number_format($brow->min)}} - {{number_format($brow->max)}} {{ substr($brow->short,3) }}
 											</td>
 											<td class="column-button">
-												<a class="browse-btn" href="{{url('offer')}}/{{$brow->offer_id}}">
-												Sell
-												</a>
+												<a class="browse-btn" href="{{url('offer')}}/{{$brow->offer_id}}">Sell</a>
 											</td>
 										</tr>
 										@endforeach
@@ -295,7 +263,8 @@
 					</div>
 				</div>
 			</section>
-			<section class="feature">
+
+			<!-- <section class="feature">
 				<div class="container">
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
@@ -304,10 +273,8 @@
 								<table class="table table-striped table-condensed table-bitcoins ">
 									<tbody>
 										<tr>
-											<th>
-												Seller
-											</th>
-											<!-- <th title="Distance">Distance</th> -->
+											<th>Seller</th>
+											<th title="Distance">Distance</th>
 											<th title="Location">Location</th>
 											<th class="header-price" title="Current price of this ad">Price / BTC</th>
 											<th class="header-limit" title="Trade amount in fiat currency">Limits</th>
@@ -321,12 +288,8 @@
 												<i class="fa fa-circle"></i>
 												</span>
 											</td>
-											<!-- <td>
-												99.3 miles
-											</td> -->
-											<td>
-												{{$lsrow->location}}
-											</td>
+											<td>99.3 miles</td>
+											<td>{{$lsrow->location}}</td>
 											<td class="column-price">
 												1 {{ $lsrow->label }} = {{$lsrow->coinprice}} USD
 											</td>
@@ -335,8 +298,7 @@
 											</td>
 											<td class="column-button">
 												<a class="browse-btn" href="{{url('offer')}}/{{$lsrow->offer_id}}">
-												Buy Bitcoins
-												</a>
+												Buy </a>
 											</td>
 										</tr>
 										@endforeach
@@ -366,10 +328,8 @@
 								<table class="table table-striped table-condensed table-bitcoins ">
 									<tbody>
 										<tr>
-											<th>
-												Seller
-											</th>
-											<!-- <th title="Distance">Distance</th> -->
+											<th>Seller</th>
+											<th title="Distance">Distance</th>
 											<th title="Location">Location</th>
 											<th class="header-price" title="Current price of this ad">Price / BTC</th>
 											<th class="header-limit" title="Trade amount in fiat currency">Limits</th>
@@ -383,9 +343,7 @@
 												<i class="fa fa-circle"></i>
 												</span>
 											</td>
-											<!-- <td>
-												99.3 miles
-											</td> -->
+											<td>99.3 miles</td>
 											<td>
 												{{$lbrow->location}}
 											</td>
@@ -397,8 +355,7 @@
 											</td>
 											<td class="column-button">
 												<a class="browse-btn" href="{{url('offer')}}/{{$lbrow->offer_id}}">
-												Sell Bitcoins
-												</a>
+												Sell</a>
 											</td>
 										</tr>
 										@endforeach
@@ -418,7 +375,8 @@
 						</div>
 					</div>
 				</div>
-			</section>
+			</section> -->
+
 			<section id="as-seen-on-container">
 				<div class="container">
 					<hr id="as-seen-on-top">
@@ -431,7 +389,8 @@
 								<img alt="Financial Times" src="{{ url('/') }}/assets/image/financial-times.png">
 							</div>
 						</div>
-					</div>
+					</div>				
+
 				</div>
 			</section>
 			
@@ -538,29 +497,116 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 		<link rel="manifest" href="/manifest.json" />
 		<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-		<!-- for image popup -->
-		<script type="text/javascript">
-			// $("#b1").hover(function () {
-			//     $('#modal1').modal({
-			//         show: true,
-			//         backdrop: false
-			//     })
-			// });
-			// $("#b2").hover(function () {
-			//     $('#modal2').modal({
-			//         show: true,
-			//         backdrop: false
-			//     })
-			// });
-		</script>
+
 		<script>
+	    function showPosition() {
+	        if(navigator.geolocation) {
+	            navigator.geolocation.getCurrentPosition(function(position) {
+	                var positionInfo = "Your current position is (" + "Latitude: " + position.coords.latitude + ", " + "Longitude: " + position.coords.longitude + ")";
+	                document.getElementById("result").innerHTML = positionInfo;
+	            });
+	        } else {
+	            alert("Sorry, your browser does not support HTML5 geolocation.");
+	        }
+	    } // showPosition();
+		</script>
+
+		 <script>
+      function initMap() {
+        var bounds = new google.maps.LatLngBounds;
+        var markersArray = [];
+
+        var origin1 = {lat: 55.93, lng: -3.118};
+        var origin2 = 'Greenwich, England';
+        var destinationA = 'Stockholm, Sweden';
+        var destinationB = {lat: 50.087, lng: 14.421};
+
+        var destinationIcon = 'https://chart.googleapis.com/chart?' +
+            'chst=d_map_pin_letter&chld=D|FF0000|000000';
+        var originIcon = 'https://chart.googleapis.com/chart?' +
+            'chst=d_map_pin_letter&chld=O|FFFF00|000000';
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 55.53, lng: 9.4},
+          zoom: 10
+        });
+        var geocoder = new google.maps.Geocoder;
+
+        var service = new google.maps.DistanceMatrixService;
+        service.getDistanceMatrix({
+          origins: [origin1, origin2],
+          destinations: [destinationA, destinationB],
+          travelMode: 'DRIVING',
+          unitSystem: google.maps.UnitSystem.METRIC,
+          avoidHighways: false,
+          avoidTolls: false
+        }, function(response, status) {
+          if (status !== 'OK') {
+            alert('Error was: ' + status);
+          } else {
+            var originList = response.originAddresses;
+            var destinationList = response.destinationAddresses;
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '';
+            deleteMarkers(markersArray);
+
+            var showGeocodedAddressOnMap = function(asDestination) {
+              var icon = asDestination ? destinationIcon : originIcon;
+              return function(results, status) {
+                if (status === 'OK') {
+                  map.fitBounds(bounds.extend(results[0].geometry.location));
+                  markersArray.push(new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    icon: icon
+                  }));
+                } else {
+                  alert('Geocode was not successful due to: ' + status);
+                }
+              };
+            };
+
+            for (var i = 0; i < originList.length; i++) {
+              var results = response.rows[i].elements;
+              geocoder.geocode({'address': originList[i]},
+                  showGeocodedAddressOnMap(false));
+              for (var j = 0; j < results.length; j++) {
+                geocoder.geocode({'address': destinationList[j]},
+                    showGeocodedAddressOnMap(true));
+                outputDiv.innerHTML += originList[i] + ' to ' + destinationList[j] +
+                    ': ' + results[j].distance.text + ' in ' +
+                    results[j].duration.text + '<br>';
+              }
+            }
+          }
+        });
+      }
+
+      function deleteMarkers(markersArray) {
+        for (var i = 0; i < markersArray.length; i++) {
+          markersArray[i].setMap(null);
+        }
+        markersArray = [];
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVUGCfwvBBhTfcH9Fe-NXX2mA75YnP2H4&callback=initMap">
+    </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVUGCfwvBBhTfcH9Fe-NXX2mA75YnP2H4&callback=initMap"
+  type="text/javascript"></script>
+
+
+		<!-- <script>
 			var OneSignal = window.OneSignal || [];
 			OneSignal.push(function() {
 			  OneSignal.init({
 			    appId: "56e62dbe-0b92-45fd-adec-12f1b7e6b5af",
 			  });
 			});
-		</script>
+		</script> -->
+
+
+
+
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117547527-1"></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];

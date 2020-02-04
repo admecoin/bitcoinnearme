@@ -40,102 +40,84 @@
 			<div class="container">
 				<nav class="navbar navbar-expand-lg navbar-dark navigationbar">
 					<!-- <a href="{{ url('/') }}/home"><img src="{{ url('/') }}/assets/image/logo.png" class="img-fluid mobile-width" alt=""></a> -->
-					<h1 class="m-0"><a href="{{ url('/') }}/home" class="text-white">BitcoinNearMe</a></h1>
+					<h1 class="m-0"><a href="{{ url('/') }}/home" class="text-white">BitcoinNearMe.com</a></h1>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
 						<ul class="navbar-nav ml-auto">
 							<li class="nav-item active">
-								<a class="nav-link" href="{{ url('/') }}/offers-buy">
+								<a class="nav-link" href="#">
 									<div class="np-link">
 										<div>
-											<i class="fa fa-search"></i>
+											<!-- <i class="fa fa-box"></i> -->
 										</div>
+										<div><span class="np-link-text">Buy Bitcoins</span></div>
+									</div>
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									<div class="np-link">
 										<div>
-											<span class="np-link-text">Browse</span>
-											<!-- <span class="np-link-text2">6k+ offers</span> -->
+											<!-- <i class="fa fa-box"></i> -->
 										</div>
+										<div><span class="np-link-text">Sell Bitcoins</span></div>
 									</div>
 								</a>
 							</li>
 							@if(Session::has('user_id')) 
 							<li class="nav-item">
-								
 								<a class="nav-link" href="{{ url('/') }}/my-trades">
-								
 									<div class="np-link">
-										<div>
-											<i class="fa fa-exchange-alt"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Post a Trades</span>
-											<!-- <span class="np-link-text2">0 active</span> -->
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-exchange-alt"></i></div> -->
+										<div><span class="np-link-text">Post a Trades</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/my-offers">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-bullhorn"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Offers</span>
-											<!-- <span class="np-link-text2">0 active</span> -->
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-bullhorn"></i></div> -->
+										<div><span class="np-link-text">Offers</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 									<a class="nav-link" href="{{ url('/') }}/wallet">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-wallet"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Wallet</span>
-											<!-- <span class="np-link-text2">0 eth</span> -->
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-wallet"></i></div> -->
+										<div><span class="np-link-text">Wallet</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 									<a class="nav-link" href="{{ url('/') }}/help">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-question-circle"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Help</span>
-											<!-- <span class="np-link-text2">0 eth</span> -->
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-question-circle"></i></div> -->
+										<div><span class="np-link-text">Help</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 									<a class="nav-link" href="{{ url('/') }}/my-account">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-user"></i>
-										</div>
-										<div>
-											<!-- <span class="np-link-text">Account</span> -->
-											<span class="np-link-text">{{Session::get('user_name')}}</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-user"></i></div> -->
+										<div><span class="np-link-text">{{Session::get('user_name')}}</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/logout">	
 									<div class="np-link">
-										<div>
-											<i class="fa fa-power-off"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Logout</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-power-off"></i></div> -->
+										<div><span class="np-link-text">Logout</span></div>
 									</div>
 								</a>
 							</li>
@@ -143,24 +125,19 @@
 							<li class="nav-item">
 									<a class="nav-link" href="{{ url('/') }}/login">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-sign-in-alt"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Login</span>
-										</div>
+
+										<div></div>
+										<!-- <div><i class="fa fa-sign-in-alt"></i></div> -->
+										<div><span class="np-link-text">Login</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
 									<a class="nav-link" href="{{ url('/') }}/register">
 									<div class="np-link">
-										<div>
-											<i class="fa fa-sign-out-alt"></i>
-										</div>
-										<div>
-											<span class="np-link-text">Register</span>
-										</div>
+										<div></div>
+										<!-- <div><i class="fa fa-sign-out-alt"></i></div> -->
+										<div><span class="np-link-text">Register</span></div>
 									</div>
 								</a>
 							</li>

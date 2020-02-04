@@ -41,9 +41,10 @@
                             <li class="nav-item">
                                     <a class="nav-link" href="{{ url('/') }}/login">
                                     <div class="np-link">
-                                        <div>
+                                        <!-- <div>
                                             <i class="fa fa-sign-in-alt"></i>
-                                        </div>
+                                        </div> -->
+                                        <div></div>
                                         <div>
                                             <span class="np-link-text">Login</span>
                                         </div>
@@ -53,9 +54,10 @@
                             <li class="nav-item">
                                     <a class="nav-link" href="{{ url('/') }}/register">
                                     <div class="np-link">
-                                        <div>
+                                        <!-- <div>
                                             <i class="fa fa-sign-out-alt"></i>
-                                        </div>
+                                        </div> -->
+                                        <div></div>
                                         <div>
                                             <span class="np-link-text">Register</span>
                                         </div>
@@ -124,7 +126,7 @@
 	    </div>
 		
         <footer class="footer">
-            <div class="container border-top">
+                <div class="container border-top">
                     <div class="row">
                         <div class="col-sm-3 col-md-3 col-lg-3">
                             <div class="footer-title">
@@ -132,25 +134,25 @@
                             </div>
                             <ul class="social">
                                 <li>
-                                    <a class="wallet-img" href="https://www.facebook.com/CrypScrow/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                                    <a class="wallet-img" href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://t.me/joinchat/H1UYZkqjw7sx2ixZLMEqRw/" target="_blank"><i class="fab fa-telegram"></i></a>
+                                    <a class="wallet-img" href="#" target="_blank"><i class="fab fa-telegram"></i></a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://twitter.com/CrypScrow/" target="_blank"><i class="fab fa-twitter"></i></a>
+                                    <a class="wallet-img" href="#" target="_blank"><i class="fab fa-twitter"></i></a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://www.instagram.com/crypscrow/" target="_blank"><i class="fab fa-instagram"></i></a>
+                                    <a class="wallet-img" href="#" target="_blank"><i class="fab fa-instagram"></i></a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://crypscrow.tumblr.com/" target="_blank"><i class="fab fa-tumblr"></i></a>
+                                    <a class="wallet-img" href="#" target="_blank"><i class="fab fa-tumblr"></i></a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://www.pinterest.com/crypscrow/" target="_blank"><i class="fab fa-pinterest"></i></a>
+                                    <a class="wallet-img" href="#" target="_blank"><i class="fab fa-pinterest"></i></a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://www.youtube.com/channel/UComYU3C6wcHeCR9YwiqZpxw/" target="_blank"><i class="fab fa-youtube"></i></a>
+                                    <a class="wallet-img" href="#" target="_blank"><i class="fab fa-youtube"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -160,7 +162,7 @@
                             </div>
                             <ul>
                                 <li>
-                                    <a class="wallet-img" href="#">How to Buy</a>
+                                    <a class="wallet-img" href="{{ url('/') }}/how-to-buy">How to Buy</a>
                                 </li>
                                 <li>
                                     <a class="wallet-img" href="{{ url('/') }}/all-buy-offers">Buy Crypto</a>
@@ -169,11 +171,8 @@
                                     <a class="wallet-img" href="{{ url('/') }}/all-sell-offers">Sell Crypto</a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="#">Convert</a>
+                                    <a class="wallet-img" href="{{ url('/') }}/exchange">Convert</a>
                                 </li>
-                                <!-- <li>
-                                    <a class="wallet-img" href="{{ url('/') }}/my-offers">My offers</a>
-                                </li> -->
                             </ul>
                         </div>
                         <div class="col-sm-3 col-md-3 col-lg-3">
@@ -182,13 +181,13 @@
                             </div>
                             <ul>
                                 <li>
-                                    <a class="wallet-img" href="faq">FAQ's</a>
+                                    <a class="wallet-img" href="{{ url('/') }}/faq">FAQ's</a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://blog.crypscrow.com/" target="_blank">Forum</a>
+                                    <a class="wallet-img" href="#" target="_blank">Forum</a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="https://blog.crypscrow.com/" target="_blank">Blog</a>
+                                    <a class="wallet-img" href="#" target="_blank">Blog</a>
                                 </li>
                                 <li>
                                     <a class="wallet-img" href="#">News</a>
@@ -211,13 +210,13 @@
                                     <a class="wallet-img" href="{{ url('/') }}/contact">Contact us</a>
                                 </li>
                                 <li>
-                                    <a class="wallet-img" href="#">Affiliate</a>
+                                    <a class="wallet-img" href="{{ url('/') }}/affiliate">Affiliate</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
-        </footer>
+            </footer>
 		<!-- Javascriprt -->
 		<script src="{{ url('/') }}/assets/js/jquery.js"></script>
 		<script src="{{ url('/') }}/assets/js/popper.min.js"></script>
