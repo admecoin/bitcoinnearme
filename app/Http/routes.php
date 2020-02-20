@@ -64,7 +64,9 @@ Route::get('/edit-offer/{id}','MainController@editoffer');
 Route::post('/updateoffer','MainController@updateoffer');
 Route::get('/delet-offer/{id}','MainController@deletoffer');
 
-Route::get('/wallet', 'MainController@wallet'); 
+Route::get('/wallet', 'WalletController@index'); 
+
+// Route::get('/wallet', 'MainController@wallet'); 
 Route::get('/btcupdate', 'MainController@btcupdate');
 Route::get('/ethupdate', 'MainController@ethupdate'); 
 Route::get('/ltcupdate', 'MainController@ltcupdate'); 

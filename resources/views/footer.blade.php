@@ -758,10 +758,6 @@
 				});
 			});
 		</script>
-		@if(Session::has('user_id'))
-			<script type="text/javascript">	
-				setInterval(function(){  window.location.href = "{{ url('/') }}/logout"; }, 600000);
-			</script>
-		@endif
+		
 	</body>
 </html>

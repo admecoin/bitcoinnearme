@@ -136,7 +136,7 @@ class RegisterationController extends Controller
 
                                     $curl1 = curl_init();
                                     curl_setopt_array($curl1, array(
-                                        CURLOPT_URL => "http://merklejobs.com:3005/createbtc",
+                                        CURLOPT_URL => "http://159.89.44.224:3000/createbtc",
                                         CURLOPT_RETURNTRANSFER => true,
                                         CURLOPT_ENCODING => "",
                                         CURLOPT_TIMEOUT => 30000,
@@ -150,7 +150,7 @@ class RegisterationController extends Controller
 
                                     $curl2 = curl_init();
                                     curl_setopt_array($curl2, array(
-                                        CURLOPT_URL => "http://merklejobs.com:3005/createeth".$insert_id,
+                                        CURLOPT_URL => "http://159.89.44.224:3000/createeth",
                                         CURLOPT_RETURNTRANSFER => true,
                                         CURLOPT_ENCODING => "",
                                         CURLOPT_TIMEOUT => 30000,
@@ -161,25 +161,11 @@ class RegisterationController extends Controller
                                     $response2 = curl_exec($curl2);
                                     curl_close($curl2);
                                     $eth = json_decode($response2,true);
-
-                                    $curl3 = curl_init();
-                                    curl_setopt_array($curl3, array(
-                                        CURLOPT_URL => "http://merklejobs.com:3005/createltc",
-                                        CURLOPT_RETURNTRANSFER => true,
-                                        CURLOPT_ENCODING => "",
-                                        CURLOPT_TIMEOUT => 30000,
-                                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                                        CURLOPT_CUSTOMREQUEST => "GET",
-                                        CURLOPT_HTTPHEADER => array('Content-Type: application/json',),
-                                    ));
-                                    $response3 = curl_exec($curl3);
-                                    curl_close($curl3);
-                                    $ltc = json_decode($response3,true);
-
                                     $array1 = array(
                                         'coin_id'     => "1",
                                         'user_id'      => $insert_id,
                                         'address'      => $btc['address'],
+                                        'balance'      => '0',
                                         "type" => "8",
                                         'status'    => "1",
                                         'created_by'       => "1",
@@ -188,6 +174,17 @@ class RegisterationController extends Controller
                                     );
 
                                     $check1 = DB::table('a_coin_wallet')->insertGetId($array1); 
+                                    DB::table('a_address')->insertGetId([
+                                        'coin_id'     => "1",
+                                        'user_id'      => $insert_id,
+                                        'address'      => $btc['address'],
+                                        'balance'      => '0',
+                                        'private_key'      => $btc['private_key'],
+                                        'status'    => "1",
+                                        'created_by'       => "1",
+                                        'created_date'  => date("Y-m-d H:i:s"),
+                                        'created_ip' => $_SERVER['REMOTE_ADDR']
+                                    ]);
 
                                     $array2 = array(
                                         'coin_id'     => "2",
@@ -200,18 +197,17 @@ class RegisterationController extends Controller
                                         'created_ip' => $_SERVER['REMOTE_ADDR']
                                     );
                                     $check2 = DB::table('a_coin_wallet')->insertGetId($array2); 
-
-                                    $array3 = array(
-                                        'coin_id'     => "3",
+                                        
+                                    DB::table('a_address')->insertGetId([
+                                        'coin_id'     => "2",
                                         'user_id'      => $insert_id,
-                                        'address'      => $ltc['address'],
-                                        "type" => "8",
+                                        'address'      => $eth['address'],
+                                        'private_key'      => $eth['private_key'],
                                         'status'    => "1",
                                         'created_by'       => "1",
                                         'created_date'  => date("Y-m-d H:i:s"),
                                         'created_ip' => $_SERVER['REMOTE_ADDR']
-                                    );
-                                    $check3 = DB::table('a_coin_wallet')->insertGetId($array3);
+                                    ]);
 
                                     if($check && $check1 && $check2 && $check3) { 
 
@@ -223,15 +219,12 @@ class RegisterationController extends Controller
                                                 'email' => $data['email'], 
                                                 'user_name' => $data['user_name'], 
                                                 'actionURL' => $link);
-                                        
 
                                         $mail = Mail::send(['html' => 'emails.verification'], $mail_data, function($message) use ($mail_data) {
                                             $message->to($mail_data['email'], $mail_data['user_name']);
                                             $message->subject('BitCoinNearMe Account Activation');
                                             $message->from('info@erience.com', 'BitCoinNearMe');
                                         });
-                                        // return response()->json($mail);
-
                                         $notification = array(
                                             'message' => 'Registration Successfull! Please Verify your account to activate.', 
                                             'alert-type' => 'success' );

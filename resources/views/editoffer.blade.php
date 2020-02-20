@@ -117,32 +117,11 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- <div class="form-group row text-left">
-                            <label class="col-sm-12 col-form-label text-center" style="padding-top:0">Or</label>
-                        </div>
-                        <div class="form-group row text-left">
-                            <label class="col-sm-3 col-form-label" style="padding-top:0"></label>
-                            <div class="col-sm-9">
-                                
-                                <p style="margin-bottom:10px;">Choose another currency:</p>
-                                <select name="trade_cur2" class="form-control">
-                                    <option value="">-- select other currency --</option>
-                                    @foreach($all_currency as $ac)
-                                        <option value="{{ $ac['currencies'][0]['code'] }}">{{ $ac['currencies'][0]['code'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div> -->
+                       
                         <input type="button" name="next" class="action-button" id="next1" value="Next">    
                     </fieldset>
                     <fieldset id="menu2">
                         
-                        <!-- <div class="form-group row text-left">
-                            <lable fro="price" class="col-sm-3 col-form-label">Price</lable>
-                            <div class="col-sm-9">
-                                <input class="form-control" name="price" type="text">
-                            </div>
-                        </div> -->
                         <div class="form-group row text-left">
                             <label class="col-sm-3 col-form-label" style="padding-top:0">Select Coin *:</label>
                             <div class="col-sm-3">
@@ -151,19 +130,7 @@
                                     @foreach($coins as $coin)
                                         <option value="{{ $coin->id }}"  @if($coin->id == $data->coin_id) selected @endif >{{ $coin->label }}</option>
                                     @endforeach
-                                </select>
-                                <!-- <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="coins" value="1" type="radio"  id="btc">
-                                    <label class="form-check-label" for="btc">BTC</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="coins" value="2" type="radio" id="eth">
-                                    <label class="form-check-label" for="eth">ETH</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" name="coins" value="3" type="radio"  id="ltc">
-                                    <label class="form-check-label" for="ltc">LTC</label>
-                                </div>  -->                               
+                                </select>                             
                             </div>
                         </div>
                         <div class="form-group row text-left">
@@ -190,7 +157,6 @@
 
                                     </div>
                                 </div>
-                                <!-- <input class="form-control" name="price" type="text"> -->
                             </div>
                         </div>
                         <div class="form-group row text-left">
@@ -225,7 +191,6 @@
                         <div class="form-group row text-left">
                             <label class="col-sm-3 col-form-label" style="padding-top:0">Time Zone :</label>
                             <div class="col-sm-9">
-                                <!-- <input type="text"  name="trade-cur2" class="form-control" /> -->
                                 <select name="timezone" disabled class="form-control">
                                     <option value="{{ $timezones }}">{{ $timezones }}</option>
                                     @foreach($all_currency as $ac)

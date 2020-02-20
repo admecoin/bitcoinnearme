@@ -1095,34 +1095,37 @@ class BackendController extends Controller
         
         $select = DB::table('a_withdraw_list')->where('id',$id)->get();
         
-            if (count($select)>0) {
-                foreach ($select as $wdr) {
-                    $to_address = $wdr->to_address;
-                    $amount = $wdr->amount;
-                    $coin_id = $wdr->coin_id;
-                    $user_id = $wdr->user_id;
-                }
-                $coin = DB::table('a_coin_info')->where('id',$coin_id)->get();
-                
-                foreach ($coin as $c) {}
-                $cointype = $c->label;
-                
-                if ($cointype == 'BTC') {
-                    $url = "http://54.175.53.61:8080/sendbtc/".$to_address."/".$amount;
-                }
-                else if ($cointype == 'ETH') {
-                    $url = "http://54.175.53.61:8080/sendeth/".$to_address."/".$amount;
-                } 
-                else if ($cointype == 'LTC') {
-                    $url = "http://54.175.53.61:8080/sendltc/".$to_address."/".$amount;
-                } 
-                else {
-                    $contr_addr = $c->contract_address;
-                    $url = "http://54.175.53.61:8080/tokentransfer/".$to_address."/".$amount."/".$contr_addr;  
-                }
+        if (count($select)>0) {
+            foreach ($select as $wdr) {
+                $to_address = $wdr->to_address;
+                $amount = $wdr->amount;
+                $coin_id = $wdr->coin_id;
+                $user_id = $wdr->user_id;
+            }
+            $coin = DB::table('a_coin_info')->where('id',$coin_id)->get();
 
-               // echo $url; exit;
+            $address = DB::table('a_address')->where('id',$coin_id)->first();
+            
+            foreach ($coin as $c) {}
+            $cointype = $c->label;
+            
+            if ($cointype == 'BTC') {
 
+            $url = "http://159.89.44.224:3000/sendbtc/".$address->address.'/'.$address->private_key.'/'.$to_address."/".$amount;
+            }
+            else if ($cointype == 'ETH') {
+                $url = "http://159.89.44.224:3000/sendeth/".$address->address.'/'.$address->private_key.'/'.$to_address."/".$amount;
+            } 
+            /*else if ($cointype == 'LTC') {
+                $url = "http://159.89.44.224:3000/sendltc/".$address->address.'/'.$address->private_key.'/'.$to_address."/".$amount;
+            } 
+            else {
+                $contr_addr = $c->contract_address;
+                $url = "http://159.89.44.224:3000/tokentransfer/".$to_address."/".$amount."/".$contr_addr;
+            }*/
+
+            if (!empty($url)) {
+                
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1141,41 +1144,29 @@ class BackendController extends Controller
                     );
                    $check = DB::table('a_withdraw_list')->where('id',$id)->update($updateArr);
                   
-                    $notification = array(
-                        'message' => 'Successfully withdrawn.',
-                        'alert-type' => 'success'
-                    );
+                    $notification = ['message' => 'Successfully withdrawn.',
+                        'alert-type' => 'success'];
                     return Redirect::back()->with($notification);              
                 }
                 else {
-                    $notification = array(
-                            'message' => 'Sorry! Request Failed.',
-                            'alert-type' => 'error'
-                        );
+                    $notification = ['message' => 'Sorry! Request Failed.',
+                            'alert-type' => 'error'];
                     return Redirect::back()->with($notification);
                 }
-            }
+            } 
             else {
                 $notification = array(
-                            'message' => 'Oops! Request Not Found.', 
-                            'alert-type' => 'error'
-                        );
-                return Redirect::to('home')->with($notification);
+                        'message' => 'Sorry! Request Failed.',
+                        'alert-type' => 'error'
+                    );
+                return Redirect::back()->with($notification);
             }
-        
-
-        
-
-        /*if ($login == 'true') {
-            
         }
         else {
-            $notification = array(
-                            'message' => 'Error occured, Please try again', 
-                            'alert-type' => 'warning'
-                        );
+            $notification = array('message' => 'Oops! Request Not Found.', 'alert-type' => 'error');
             return Redirect::to('home')->with($notification);
-        }*/
+        }
+        
     }
 
     /**

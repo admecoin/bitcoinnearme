@@ -2,19 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>CrypScrow | Dashboard</title>
+        <title>BitcoinNearMe | Dashboard</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="Erience Solutions" name="description" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <link rel="icon" href="images/favicon.ico">	
 		
-		<!-- @if(Session::has('user_id'))
-			<meta http-equiv="refresh" content="600; url={{url('/')}}/logout" />
-		@endif -->
-
         <link href="{{ url('/')}}/admin_assets/assets/libs/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" type="text/css" />
 
         <link href="{{ url('/')}}/admin_assets/assets/libs/flatpickr/flatpickr.min.css" rel="stylesheet" type="text/css" />
+
         <link href="{{ url('/')}}/admin_assets/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="{{ url('/')}}/admin_assets/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <link href="{{ url('/')}}/admin_assets/assets/css/app.min.css" rel="stylesheet" type="text/css" />
@@ -23,14 +20,11 @@
     </head>
 
     <body>
-
         <!-- Begin page -->
         <div id="wrapper">
-
             <!-- Topbar Start -->
             <div class="navbar-custom">
                 <ul class="list-unstyled topnav-menu float-right mb-0">
- 
                     <li class="dropdown notification-list">
                         <a class="nav-link dropdown-toggle nav-user mr-0 waves-effect waves-light" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                             <img src="{{ url('/')}}/admin_assets/assets/images/users/user-1.jpg" alt="user-image" class="rounded-circle">
@@ -77,10 +71,7 @@
 
                         </div>
                     </li>
-
-
                 </ul>
-
                 <!-- LOGO -->
                 <div class="logo-box">
                     <a href="{{ url('/')}}/admin/dashboard" class="logo text-center">
@@ -101,7 +92,6 @@
                             <i class="fe-menu"></i>
                         </button>
                     </li>
-
 				</ul>
             </div>
             <!-- end Topbar -->

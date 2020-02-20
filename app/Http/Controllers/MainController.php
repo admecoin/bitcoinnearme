@@ -1337,7 +1337,7 @@ class MainController extends Controller {
 			
 			$check = DB::table('a_payment_mode')->where('status',"1")->get();
 			
-			$coins = DB::table('a_coin_info')->get();
+			$coins = DB::table('a_coin_info')->where('type',"coin")->where('status',"1")->get();
 
 			$data = array(
 				"country" => $country,
@@ -1873,53 +1873,36 @@ class MainController extends Controller {
 	public function withdrow(Request $res) {
 		
 		$data = Input::all();
-		
 		$uid = Session::get('user_id');
 
 		if ($uid != '') {
 
 			$coin_id = $data['coin_id'];
-
 			$coin = DB::table('a_coin_info')->where('id',$coin_id)->get();
 			foreach ($coin as $c) {}
-			$cointype = $c->label;
-
+				$cointype = $c->label;
 
 			if ($cointype == 'BTC') {
-				$wallet = DB::table('a_coin_wallet')->select('id','balance')->where('coin_id',$coin_id)->where('user_id',$uid)->get();
-				$wallet = $this->lock_balance($coin_id);
+				$wallet = DB::table('a_coin_wallet')->select('id','balance','address')->where('coin_id',$coin_id)->where('user_id',$uid)->first();
+				$wallet_data = $this->lock_balance($coin_id);
 				
 			}
 			else if ($cointype == 'ETH') {
-				$wallet = $this->lock_balance($coin_id);
-				// $wallet = DB::table('a_coin_wallet')->select('id','balance')->where('coin_id',$coin_id)->where('user_id',$uid)->get();
-			}
-			else if ($cointype == 'LTC') { 
-				$wallet = $this->lock_balance($coin_id);
-				// $wallet = DB::table('a_coin_wallet')->select('id','balance')->where('coin_id',$coin_id)->where('user_id',$uid)->get();
-			}
-			else {
-				$wallet = $this->lock_balance(2);
+				
+				$wallet = DB::table('a_coin_wallet')->select('id','balance','address')->where('coin_id',$coin_id)->where('user_id',$uid)->first();
 
-				// $wallet = DB::table('a_coin_wallet')->select('id','balance')->where('coin_id',2)->where('user_id',$uid)->get();
+				$wallet_data = $this->lock_balance($coin_id);
 			}
 
-			// echo "<pre>"; print_r($wallet['avalable_balance']); exit;
-
-			// $balance = $wallet[0]->balance;
-			$balance = $wallet['avalable_balance'];
-			
-			// $wallet_id = $wallet[0]->id;
+			$balance = $wallet_data['avalable_balance'];
 			$amount = $data['amount'];
-			
-
 
 			if ($balance >= $amount) {
 
 				$array = array(
 					'user_id' => $uid,
 					'coin_id' => $data['coin_id'],
-					'from_address' => $data['from'],
+					'from_address' => $wallet->address,
 					'to_address' => $data['to'],
 					'amount' => $data['amount'],
 					"status" => "1",
@@ -1930,19 +1913,8 @@ class MainController extends Controller {
 
 				$check = DB::table('a_withdraw_list')->insertGetId($array);
 
+
 				if ($check) {
-					
-					// $avail_bal = $balance-$amount;
-					
-					// $updateArr = array(
-					// 	'balance' => $avail_bal,
-					// 	'modified_by' => $uid,
-					// 	'modified_date' => date("Y-m-d H:i:s"),
-					// 	'modified_ip' => $_SERVER['REMOTE_ADDR'],
-					// );
-
-					// DB::table('a_coin_wallet')->where('coin_id',$coin_id)->where('user_id',$uid)->update($updateArr);
-
 					$notification = array(
 							'message' => 'Withdrow Request Successfully Send',
 							'alert-type' => 'success' );
@@ -3041,7 +3013,7 @@ class MainController extends Controller {
 			
 			$check = DB::table('a_payment_mode')->where('status',"1")->get();
 			
-			$coins = DB::table('a_coin_info')->get();
+			$coins = DB::table('a_coin_info')->where('type',"coin")->where('status',"1")->get();
 
 			$coin_arr =array();
 
@@ -3132,7 +3104,8 @@ class MainController extends Controller {
 
 					$user = DB::table('a_users')->select('user_name')->where("id",$row->user_id)->first();
 					$coin = DB::table('a_master_values')->select('name')->where("id",$row->coin_id)->first();
-					$coin_info = DB::table('a_coin_info')->select('name','price')->where("id",$row->coin_id)->first();
+					$coin_info = DB::table('a_coin_info')->select('name','price')
+					->where("id",$row->coin_id)->where('status',"1")->first();
 					$type = DB::table('a_master_values')->select('name')->where("id",$row->type_id)->first();
 					$mode = DB::table('a_payment_mode')->select('name')->where("id",$row->mode_id)->first();
 					$currency = DB::table('a_currency_list')->select('short')->where("id",$row->currency_id)->first();
@@ -3534,7 +3507,7 @@ class MainController extends Controller {
 			
 			} else {
 
-				$coins = DB::table('a_coin_info')->select('*')->where('id', $data['coins'])->get();
+				$coins = DB::table('a_coin_info')->select('*')->where('id', $data['coins'])->where('status',"1")->get();
 				foreach ($coins as $c) { }
 				$contract_addr = $c->contract_address;
 
@@ -4294,7 +4267,7 @@ class MainController extends Controller {
 						if ($user[0]->user_type == 1) {							
 							return Redirect::to('admin')->with($notification);
 						} else {
-							return Redirect::to('offers-buy')->with($notification);
+							return Redirect::to('home')->with($notification);
 						}
 
 					} else if($status =='0'){
@@ -4862,7 +4835,7 @@ class MainController extends Controller {
 
 						}
 
-						$cinfo = DB::table('a_coin_info')->where("id",$o->coin_id)->get();
+						$cinfo = DB::table('a_coin_info')->where("id",$o->coin_id)->where('status',"1")->get();
 						foreach($cinfo as $ci){}
 						$cname = $ci->label;
 
@@ -5919,11 +5892,11 @@ class MainController extends Controller {
 		// For logged in User created offers contracts
 		$contracts2 = DB::table('a_contract')->select('id','offer_id','from_user','to_user','currency_id','crypto_value','fiat_value','fees','fees2', 'co_status')->where('from_user', $uid)->where('coin_id', $coin_id)->get();
 
-		$withdrow_list = DB::table('a_withdraw_list')->select('amount')->where('user_id', $uid)->where('coin_id', $c->id)->get();
+		$withdrow_list = DB::table('a_withdraw_list')->select('amount')->where('user_id', $uid)->where('coin_id', $coin_id)->get();
 		 $withdrow_balance = 0;
 
 		if (count($withdrow_list)>0) {
-			foreach($withdrow_list as $wh) { $withdrow_balance += $wh->amount; }
+			foreach($withdrow_list as $wh) { $withdrow_balance += floatval($wh->amount); }
 		} 
 
 		if ($withdrow_balance == '') {
@@ -6020,7 +5993,7 @@ class MainController extends Controller {
 			$total_balance = ($current_bal+$buy+$locked) - ($sale+$fees+$withdrow_balance);
 			
 			$array = array(
-				'lock_balance' => $locked,
+				'lock_balance' => $locked+$withdrow_balance,
 				'buy' => $buy,
 				'sale' => $sale,
 				'fees' => $fees,
@@ -6144,7 +6117,7 @@ class MainController extends Controller {
 			$total_balance = ($balance+$buy+$locked) - ($sale+$fees+$withdrow_balance);
 
 			$array = array(
-				'lock_balance' => $locked,
+				'lock_balance' => $locked+$withdrow_balance,
 				'buy' => $buy,
 				'sale' => $sale,
 				'fees' => $fees,

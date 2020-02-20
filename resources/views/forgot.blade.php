@@ -42,9 +42,6 @@
                                     <a class="nav-link" href="{{ url('/') }}/login">
                                     <div class="np-link">
                                         <div>
-                                            <i class="fa fa-sign-in-alt"></i>
-                                        </div>
-                                        <div>
                                             <span class="np-link-text">Login</span>
                                         </div>
                                     </div>
@@ -53,9 +50,6 @@
                             <li class="nav-item">
                                     <a class="nav-link" href="{{ url('/') }}/register">
                                     <div class="np-link">
-                                        <div>
-                                            <i class="fa fa-sign-out-alt"></i>
-                                        </div>
                                         <div>
                                             <span class="np-link-text">Register</span>
                                         </div>

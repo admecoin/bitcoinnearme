@@ -1,5 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+    function get_client_ip()
+    {
+        $ipaddress = '';
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+            $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+        } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+            $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+            $ipaddress = $_SERVER['HTTP_FORWARDED'];
+        } else if (isset($_SERVER['REMOTE_ADDR'])) {
+            $ipaddress = $_SERVER['REMOTE_ADDR'];
+        } else {
+            $ipaddress = 'UNKNOWN';
+        }
+    
+        return $ipaddress;
+    }
+    function get_country($json)
+    {
+        return $country  = $json['country'];
+    }
+    function get_region($json)
+    {
+        return $region = $json['region'];
+    }
+    function get_city($json) 
+    {
+        return $city = $json['city'];
+    }
+    
+    function generate_string($json)
+    {
+        return $address = get_country($json).' '.get_region($json).' '.get_city($json);
+    }
+    
+    
+    
+
+    function getDistance($addressTo, $addressFrom,$unit=' '){
+        $apiKey='AIzaSyCS1FhFE2oniXdaWBCrZI9SVGcltT7B5uY';  //Сюда вставить ключ
+
+        $formattedAddrFrom    = str_replace(' ', '+', $addressFrom);
+        $formattedAddrTo     = str_replace(' ', '+', $addressTo);  
+   
+        $geocodeFrom = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$formattedAddrFrom.'&sensor=false&key='.$apiKey);
+        $outputFrom = json_decode($geocodeFrom);
+        if(!empty($outputFrom->error_message)){
+            return $outputFrom->error_message;
+        }
+    
+        $geocodeTo = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address='.$formattedAddrTo.'&sensor=false&key='.$apiKey);
+        $outputTo = json_decode($geocodeTo);
+        if(!empty($outputTo->error_message)){
+            return $outputTo->error_message;
+        }
+    
+        $latitudeFrom    = $outputFrom->results[0]->geometry->location->lat;
+        $longitudeFrom    = $outputFrom->results[0]->geometry->location->lng;
+        $latitudeTo        = $outputTo->results[0]->geometry->location->lat;
+        $longitudeTo    = $outputTo->results[0]->geometry->location->lng;
+    
+        $theta    = $longitudeFrom - $longitudeTo;
+        $dist    = rad2deg(acos(sin(deg2rad($latitudeFrom)) * sin(deg2rad($latitudeTo)) +  cos(deg2rad($latitudeFrom)) * cos(deg2rad($latitudeTo)) * cos(deg2rad($theta))));
+        $miles    = $dist * 60 * 1.1515;
+    
+        $unit = strtoupper($unit);
+        if($unit == "K"){
+            return round($miles * 1.609344, 2).' km';
+        }else{
+            return round($miles, 2).' miles';
+        }   
+}
+    $ip = get_client_ip();
+    $json     = file_get_contents("http://ipinfo.io/$ip/geo");
+    $json     = json_decode($json, true);
+    $destination=' Queens, NY, USA';
+    $from=generate_string($json);
+    $distance=getDistance($destination, $from,"K");
+
+?>
+
 	<head>
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
@@ -17,7 +103,9 @@
 		<link rel="stylesheet" href="{{ url('/') }}/assets/css/fontawesome-free-5.3.1.css">
 		<link rel="stylesheet" href="{{ url('/') }}/assets/css/animate.css">
 		<link rel="stylesheet" href="{{ url('/') }}/assets/css/style.css">
+		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117547527-1"></script>
 		<script>
 			window.dataLayer = window.dataLayer || [];
@@ -29,20 +117,23 @@
 	</head>
 	<body>
 		<!-- Navigation -->
+		<!-- Navigation -->
 		<header id="myHeader">
 			<div class="container">
 				<nav class="navbar navbar-expand-lg navbar-dark navigationbar">
+					<!-- <a href="{{ url('/') }}/home"><img src="{{ url('/') }}/assets/image/logo.png" class="img-fluid mobile-width" alt=""></a> -->
 					<h1 class="m-0"><a href="{{ url('/') }}/home" class="text-white">BitcoinNearMe.com</a></h1>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav ml-auto">
+						<ul class="navbar-nav mr-auto">
 							<li class="nav-item active">
 								<a class="nav-link" href="#">
 									<div class="np-link">
-										<div></div>
-										<!-- <div><i class="fa fa-box"></i></div> -->
+										<div>
+											<!-- <i class="fa fa-box"></i> -->
+										</div>
 										<div><span class="np-link-text">Buy Bitcoins</span></div>
 									</div>
 								</a>
@@ -50,36 +141,35 @@
 							<li class="nav-item">
 								<a class="nav-link" href="#">
 									<div class="np-link">
-										<div></div>
-										<!-- <div><i class="fa fa-box" aria-hidden="true"></i></div> -->
+										<div>
+											<!-- <i class="fa fa-box"></i> -->
+										</div>
 										<div><span class="np-link-text">Sell Bitcoins</span></div>
+									</div>
+								</a>
+							</li>
+							
+							<li class="nav-item">
+								<a class="nav-link" href="{{ url('/') }}/my-trades">
+									<div class="np-link">
+										<div></div>
+										<!-- <div><i class="fa fa-exchange-alt"></i></div> -->
+										<div><span class="np-link-text">Post a Trade</span></div>
 									</div>
 								</a>
 							</li>
 							@if(Session::has('user_id')) 
 							<li class="nav-item">
-								<a class="nav-link" href="{{ url('/') }}/my-trades">
-									<div class="np-link">
-										<div></div>
-										<!-- <div>
-											<i class="fa fa-exchange-alt"></i>
-										</div> -->
-										<div>
-											<span class="np-link-text">Post a Trades</span>
-										</div>
-									</div>
-								</a>
-							</li>
-							<li class="nav-item">
 								<a class="nav-link" href="{{ url('/') }}/my-offers">
 									<div class="np-link">
-										<div><i class="fa fa-bullhorn"></i></div>
+										<div></div>
+										<!-- <div><i class="fa fa-bullhorn"></i></div> -->
 										<div><span class="np-link-text">Offers</span></div>
 									</div>
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="{{ url('/') }}/wallet">
+									<a class="nav-link" href="{{ url('/') }}/wallet">
 									<div class="np-link">
 										<div></div>
 										<!-- <div><i class="fa fa-wallet"></i></div> -->
@@ -87,8 +177,9 @@
 									</div>
 								</a>
 							</li>
+							@endif
 							<li class="nav-item">
-								<a class="nav-link" href="{{ url('/') }}/help">
+									<a class="nav-link" href="{{ url('/') }}/help">
 									<div class="np-link">
 										<div></div>
 										<!-- <div><i class="fa fa-question-circle"></i></div> -->
@@ -96,8 +187,13 @@
 									</div>
 								</a>
 							</li>
+						</ul>
+
+						<ul class="navbar-nav">
+							@if(Session::has('user_id')) 
+							
 							<li class="nav-item">
-								<a class="nav-link" href="{{ url('/') }}/my-account">
+									<a class="nav-link" href="{{ url('/') }}/my-account">
 									<div class="np-link">
 										<div></div>
 										<!-- <div><i class="fa fa-user"></i></div> -->
@@ -106,7 +202,7 @@
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="{{ url('/') }}/logout">
+								<a class="nav-link" href="{{ url('/') }}/logout">	
 									<div class="np-link">
 										<div></div>
 										<!-- <div><i class="fa fa-power-off"></i></div> -->
@@ -116,8 +212,9 @@
 							</li>
 							@else
 							<li class="nav-item">
-								<a class="nav-link" href="{{ url('/') }}/login">
+									<a class="nav-link" href="{{ url('/') }}/login">
 									<div class="np-link">
+
 										<div></div>
 										<!-- <div><i class="fa fa-sign-in-alt"></i></div> -->
 										<div><span class="np-link-text">Login</span></div>
@@ -125,7 +222,7 @@
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="{{ url('/') }}/register">
+									<a class="nav-link" href="{{ url('/') }}/register">
 									<div class="np-link">
 										<div></div>
 										<!-- <div><i class="fa fa-sign-out-alt"></i></div> -->
@@ -133,8 +230,10 @@
 									</div>
 								</a>
 							</li>
+
 							@endif
 						</ul>
+
 					</div>
 				</nav>
 			</div>
@@ -142,12 +241,15 @@
 		<main class="main">
 			<section>
 				<div class="container">
+							@if(Session::has('user_id')) 
+							@else
 					<div class="banner">
 						<h1 class="title">Buy and sell bitcoins near you</h1>
 						<h2 class="tagline">Instant. Secure. Private.</h2>
 						<p>Trade bitcoins in <span class="tagline">7909 cities</span> and <span class="tagline">248 countries</span> including <span class="tagline">India</span></p>
 						<a href="#" title="" class="browse-btn"><i class="fas fa-user-plus"></i> Sign up free</a>
 					</div>
+					@endif
 				</div>
 			</section>
 			<!-- Buy bitcoins section -->
@@ -161,7 +263,10 @@
 								<table class="table table-striped table-condensed table-bitcoins ">
 									<tbody>
 										<tr>
+											<!-- <th>Buyer</th> -->
 											<th>Seller</th>
+											<!-- <th title="Payment Method">Payment Method</th> -->
+											<!-- <th title="Location">Location</th> -->
 											<th title="Distance">Distance</th>
 											<th title="Location">Location</th>
 											<th class="header-price" title="Current price of this ad">Price / BTC</th>
@@ -176,7 +281,9 @@
 												<i class="fa fa-circle"></i>
 												</span>
 											</td>
-											<td>99.3 miles</td>
+											<!-- <td>{{ $srow->payment_mode }}</td> -->
+                                            <td><?php $dist= GetDistance($srow->location,$from,'');
+                                                echo $dist;?></td>
 											<td >{{ $srow->location }}</td>
 											<td class="column-price">
 												1 {{ $srow->label }} = {{$srow->coinprice}} USD
@@ -212,14 +319,15 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-sm-12 col-md-12 col-lg-12">
-							<h3>Buy bitcoins online in United States</h3>
+							<h3>Buy bitcoins online in the United States</h3>
 							<div class="table-responsive">
 								<table class="table table-striped table-condensed table-bitcoins ">
 									<tbody>
 										<tr>
-											<th>Buyer</th>
-											<th title="Distance">Distance</th>
-											<th title="Location">Location</th>
+											<!-- <th>Seller</th> -->
+											<th>Seller</th>
+											<!-- <th>Payment Method</th> -->
+											<th title="payment_method">Payment Method</th>
 											<th class="header-price" title="Current price of this ad">Price / BTC</th>
 											<th class="header-limit" title="Trade amount in fiat currency">Limits</th>
 											<th></th>
@@ -232,8 +340,9 @@
 												<i class="fa fa-circle"></i>
 												</span>
 											</td>
-											<td>99.3 miles</td>
-											<td >{{$brow->location}}</td>
+											 <td>{{ $brow->payment_mode }}</td> 
+											<!-- <td>99.3 miles</td>-->
+											<!--<td >{{$brow->location}}</td>-->
 											<td class="column-price">
 												1 {{ $brow->label }} = {{$brow->coinprice}} USD
 											</td>
@@ -241,7 +350,7 @@
 												{{number_format($brow->min)}} - {{number_format($brow->max)}} {{ substr($brow->short,3) }}
 											</td>
 											<td class="column-button">
-												<a class="browse-btn" href="{{url('offer')}}/{{$brow->offer_id}}">Sell</a>
+												<a class="browse-btn" href="{{url('offer')}}/{{$brow->offer_id}}">Buy</a>
 											</td>
 										</tr>
 										@endforeach
@@ -497,102 +606,6 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 		<link rel="manifest" href="/manifest.json" />
 		<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-
-		<script>
-	    function showPosition() {
-	        if(navigator.geolocation) {
-	            navigator.geolocation.getCurrentPosition(function(position) {
-	                var positionInfo = "Your current position is (" + "Latitude: " + position.coords.latitude + ", " + "Longitude: " + position.coords.longitude + ")";
-	                document.getElementById("result").innerHTML = positionInfo;
-	            });
-	        } else {
-	            alert("Sorry, your browser does not support HTML5 geolocation.");
-	        }
-	    } // showPosition();
-		</script>
-
-		 <script>
-      function initMap() {
-        var bounds = new google.maps.LatLngBounds;
-        var markersArray = [];
-
-        var origin1 = {lat: 55.93, lng: -3.118};
-        var origin2 = 'Greenwich, England';
-        var destinationA = 'Stockholm, Sweden';
-        var destinationB = {lat: 50.087, lng: 14.421};
-
-        var destinationIcon = 'https://chart.googleapis.com/chart?' +
-            'chst=d_map_pin_letter&chld=D|FF0000|000000';
-        var originIcon = 'https://chart.googleapis.com/chart?' +
-            'chst=d_map_pin_letter&chld=O|FFFF00|000000';
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 55.53, lng: 9.4},
-          zoom: 10
-        });
-        var geocoder = new google.maps.Geocoder;
-
-        var service = new google.maps.DistanceMatrixService;
-        service.getDistanceMatrix({
-          origins: [origin1, origin2],
-          destinations: [destinationA, destinationB],
-          travelMode: 'DRIVING',
-          unitSystem: google.maps.UnitSystem.METRIC,
-          avoidHighways: false,
-          avoidTolls: false
-        }, function(response, status) {
-          if (status !== 'OK') {
-            alert('Error was: ' + status);
-          } else {
-            var originList = response.originAddresses;
-            var destinationList = response.destinationAddresses;
-            var outputDiv = document.getElementById('output');
-            outputDiv.innerHTML = '';
-            deleteMarkers(markersArray);
-
-            var showGeocodedAddressOnMap = function(asDestination) {
-              var icon = asDestination ? destinationIcon : originIcon;
-              return function(results, status) {
-                if (status === 'OK') {
-                  map.fitBounds(bounds.extend(results[0].geometry.location));
-                  markersArray.push(new google.maps.Marker({
-                    map: map,
-                    position: results[0].geometry.location,
-                    icon: icon
-                  }));
-                } else {
-                  alert('Geocode was not successful due to: ' + status);
-                }
-              };
-            };
-
-            for (var i = 0; i < originList.length; i++) {
-              var results = response.rows[i].elements;
-              geocoder.geocode({'address': originList[i]},
-                  showGeocodedAddressOnMap(false));
-              for (var j = 0; j < results.length; j++) {
-                geocoder.geocode({'address': destinationList[j]},
-                    showGeocodedAddressOnMap(true));
-                outputDiv.innerHTML += originList[i] + ' to ' + destinationList[j] +
-                    ': ' + results[j].distance.text + ' in ' +
-                    results[j].duration.text + '<br>';
-              }
-            }
-          }
-        });
-      }
-
-      function deleteMarkers(markersArray) {
-        for (var i = 0; i < markersArray.length; i++) {
-          markersArray[i].setMap(null);
-        }
-        markersArray = [];
-      }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVUGCfwvBBhTfcH9Fe-NXX2mA75YnP2H4&callback=initMap">
-    </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVUGCfwvBBhTfcH9Fe-NXX2mA75YnP2H4&callback=initMap"
-  type="text/javascript"></script>
 
 
 		<!-- <script>
