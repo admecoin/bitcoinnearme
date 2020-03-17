@@ -1088,12 +1088,12 @@ class BackendController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function acceptwithdraw($id=''){
+    public function acceptwithdraw($id='') {
         
         $data = array();
         $login = $this->loginchk();
         
-        $select = DB::table('a_withdraw_list')->where('id',$id)->get();
+        $select = DB::table('a_withdraw_list')->where('id', $id)->get();
         
         if (count($select)>0) {
             foreach ($select as $wdr) {
@@ -1103,8 +1103,7 @@ class BackendController extends Controller
                 $user_id = $wdr->user_id;
             }
             $coin = DB::table('a_coin_info')->where('id',$coin_id)->get();
-
-            $address = DB::table('a_address')->where('id',$coin_id)->first();
+            $address = DB::table('a_address')->where('user_id',$user_id)->where('coin_id', $coin_id)->first();
             
             foreach ($coin as $c) {}
             $cointype = $c->label;
@@ -1116,13 +1115,8 @@ class BackendController extends Controller
             else if ($cointype == 'ETH') {
                 $url = "http://159.89.44.224:3000/sendeth/".$address->address.'/'.$address->private_key.'/'.$to_address."/".$amount;
             } 
-            /*else if ($cointype == 'LTC') {
-                $url = "http://159.89.44.224:3000/sendltc/".$address->address.'/'.$address->private_key.'/'.$to_address."/".$amount;
-            } 
-            else {
-                $contr_addr = $c->contract_address;
-                $url = "http://159.89.44.224:3000/tokentransfer/".$to_address."/".$amount."/".$contr_addr;
-            }*/
+            
+            // print_r($address); exit;
 
             if (!empty($url)) {
                 
